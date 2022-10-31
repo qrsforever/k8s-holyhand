@@ -1,0 +1,5 @@
+#%PAM-1.0
+auth	required	pam_userdb.so	db=/app/config/virtual_users
+account	required	pam_userdb.so	db=/app/config/virtual_users
+session	required	pam_loginuid.so
+

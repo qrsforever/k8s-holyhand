@@ -1,7 +1,7 @@
 # 通用 Makefile
 
 # $(info "######## Makefile #######")
- 
+
 # PROJECT_ROOT_DIR := $(shell git worktree list | cut -d \  -f1)
 # PROJECT_ROOT_DIR := $(shell dirname `git rev-parse --git-dir`)
 
@@ -18,8 +18,8 @@ CC		:=
 AR		:= $(CROSS_COMPILE)ar
 CFLAGS  := $(OPTIMIZE) $(WARNINGS) $(DEFS)
 CPPFLAGS:= -std=c++11
-LDFLAGS := -Wl,-rpath=. -lpthread
-INCLUDE :=
+LDFLAGS := -L/opt/build/lib -lcos_c_sdk -lapr-1 -laprutil-1 -lmxml -lpthread -lcurl   
+INCLUDE := -I/opt/build/include -I/opt/build/include/apr-1 -I/opt/build/include/cos_c_sdk
 
 # 源文件可能的后缀
 SRCEXTS := c C cc cpp CPP c++ cxx cp
@@ -41,7 +41,7 @@ EXCLUDE_SRC := %UnitTest.cpp
 # 设置目标类型(exe, a, so), 及目标名字
 TARGET_TYPE := exe
 TARGET_TYPE := $(strip $(TARGET_TYPE))
-TARGET_NAME :=
+TARGET_NAME := cosftpd
 
 ifeq ($(TARGET_NAME), )
 	TARGET_NAME := $(shell basename $(PWD))

@@ -9,6 +9,7 @@ services:
 
 
   cosftpd:
+    image: hzcsk8s.io/cosftpd
     build:
       context: .
       dockerfile: dockerfiles/Dockerfile.cosftpd
