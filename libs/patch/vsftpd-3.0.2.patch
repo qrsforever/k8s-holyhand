@@ -1,0 +1,68 @@
+diff -ru ../vsftpd-3.0.2/logging.c vsftpd-3.0.2/logging.c
+--- ../vsftpd-3.0.2/logging.c	2013-06-13 19:20:41.000000000 +0800
++++ vsftpd-3.0.2/logging.c	2022-10-31 14:04:13.024386990 +0800
+@@ -14,6 +14,10 @@
+ #include "sysstr.h"
+ #include "session.h"
+ 
++#define VSFTP_FIFO_PATH  "/run/vsftpd.fifo"
++#include <fcntl.h>
++
++
+ /* File local functions */
+ static int vsf_log_type_is_transfer(enum EVSFLogEntryType type);
+ static void vsf_log_common(struct vsf_session* p_sess, int succeeded,
+@@ -30,6 +34,7 @@
+ void
+ vsf_log_init(struct vsf_session* p_sess)
+ {
++  p_sess->vsftpd_fifo_fd = open(VSFTP_FIFO_PATH, O_WRONLY);
+   if (tunable_syslog_enable || tunable_tcp_wrappers)
+   {
+     vsf_sysutil_openlog(1);
+diff -ru ../vsftpd-3.0.2/main.c vsftpd-3.0.2/main.c
+--- ../vsftpd-3.0.2/main.c	2013-06-13 19:20:41.000000000 +0800
++++ vsftpd-3.0.2/main.c	2022-10-31 14:05:34.267184179 +0800
+@@ -54,7 +54,7 @@
+     /* Pre-chroot() cache */
+     INIT_MYSTR, INIT_MYSTR, INIT_MYSTR, INIT_MYSTR, 1,
+     /* Logging */
+-    -1, -1, INIT_MYSTR, 0, 0, 0, INIT_MYSTR, 0,
++    -1, -1, -1, INIT_MYSTR, 0, 0, 0, INIT_MYSTR, 0,
+     /* Buffers */
+     INIT_MYSTR, INIT_MYSTR,
+     /* Parent <-> child comms */
+diff -ru ../vsftpd-3.0.2/postlogin.c vsftpd-3.0.2/postlogin.c
+--- ../vsftpd-3.0.2/postlogin.c	2013-06-13 19:20:41.000000000 +0800
++++ vsftpd-3.0.2/postlogin.c	2022-10-31 14:07:19.697908899 +0800
+@@ -27,6 +27,7 @@
+ #include "ssl.h"
+ #include "vsftpver.h"
+ #include "opts.h"
++#include <string.h>
+ 
+ /* Private local functions */
+ static void handle_pwd(struct vsf_session* p_sess);
+@@ -1134,6 +1135,11 @@
+   if (trans_ret.retval == 0)
+   {
+     success = 1;
++    if (p_sess->vsftpd_fifo_fd > 0) {
++        char buff[256] = {0};
++        memcpy(buff, str_getbuf(p_filename), 255);
++        vsf_sysutil_write_loop(p_sess->vsftpd_fifo_fd, buff, 256);
++    }
+     vsf_log_do_log(p_sess, 1);
+   }
+   if (trans_ret.retval == -1)
+diff -ru ../vsftpd-3.0.2/session.h vsftpd-3.0.2/session.h
+--- ../vsftpd-3.0.2/session.h	2013-06-13 19:20:41.000000000 +0800
++++ vsftpd-3.0.2/session.h	2022-10-31 14:08:28.097227633 +0800
+@@ -68,6 +68,7 @@
+   /* Logging related details */
+   int xferlog_fd;
+   int vsftpd_log_fd;
++  int vsftpd_fifo_fd;
+   struct mystr remote_ip_str;
+   unsigned long log_type;
+   long log_start_sec;

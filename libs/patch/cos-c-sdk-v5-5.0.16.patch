@@ -1,0 +1,23 @@
+diff -u ../cos-c-sdk-v5-5.0.16/CMakeLists.txt cos-c-sdk-v5-5.0.16/CMakeLists.txt
+--- ../cos-c-sdk-v5-5.0.16/CMakeLists.txt	2022-10-25 16:56:35.000000000 +0800
++++ cos-c-sdk-v5-5.0.16/CMakeLists.txt	2022-10-31 15:40:59.858219846 +0800
+@@ -27,9 +27,10 @@
+ set(EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR}/build/${CMAKE_BUILD_TYPE}/bin)
+ set(CMAKE_C_OUTPUT_EXTENSION_REPLACE 1)
+ set(CMAKE_CXX_OUTPUT_EXTENSION_REPLACE 1)
+-
+-FIND_PROGRAM(APR_CONFIG_BIN NAMES apr-config apr-1-config PATHS /usr/bin /usr/local/bin /usr/local/apr/bin/)
+-FIND_PROGRAM(APU_CONFIG_BIN NAMES apu-config apu-1-config PATHS /usr/bin /usr/local/bin /usr/local/apr/bin/)
++set(CMAKE_INSTALL_PREFIX /opt/build)
++set(MINIXML_INCLUDE_DIR /opt/build/include)
++FIND_PROGRAM(APR_CONFIG_BIN NAMES apr-config apr-1-config PATHS /opt/build/bin/)
++FIND_PROGRAM(APU_CONFIG_BIN NAMES apu-config apu-1-config PATHS /opt/build/bin/)
+ 
+ IF (APR_CONFIG_BIN)
+     EXECUTE_PROCESS(
+@@ -121,4 +122,4 @@
+   cos_c_sdk/cos_xml.h
+   DESTINATION include/cos_c_sdk)
+ 
+-add_subdirectory(cos_c_sdk_test)
++# add_subdirectory(cos_c_sdk_test)
