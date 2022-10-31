@@ -45,7 +45,6 @@ RUN cd /opt/build && \
         make -j && cp vsftpd ../bin
 
 ## build cos-c-sdk-v5-5.0.16
-RUN yum install -y cmake
 RUN cd /opt/build && \
         tar zxf cos-c-sdk-v5-5.0.16.tar.gz && \
         cd cos-c-sdk-v5-5.0.16 && \
