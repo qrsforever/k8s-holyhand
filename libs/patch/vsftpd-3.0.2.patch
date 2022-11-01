@@ -34,7 +34,7 @@ diff -ru ../vsftpd-3.0.2/main.c vsftpd-3.0.2/main.c
      /* Parent <-> child comms */
 diff -ru ../vsftpd-3.0.2/postlogin.c vsftpd-3.0.2/postlogin.c
 --- ../vsftpd-3.0.2/postlogin.c	2013-06-13 19:20:41.000000000 +0800
-+++ vsftpd-3.0.2/postlogin.c	2022-10-31 14:07:19.697908899 +0800
++++ vsftpd-3.0.2/postlogin.c	2022-11-01 20:28:45.319084096 +0800
 @@ -27,6 +27,7 @@
  #include "ssl.h"
  #include "vsftpver.h"
@@ -49,7 +49,7 @@ diff -ru ../vsftpd-3.0.2/postlogin.c vsftpd-3.0.2/postlogin.c
      success = 1;
 +    if (p_sess->vsftpd_fifo_fd > 0) {
 +        char buff[256] = {0};
-+        memcpy(buff, str_getbuf(p_filename), 255);
++        memcpy(buff, str_getbuf(&p_sess->log_str), 255);
 +        vsf_sysutil_write_loop(p_sess->vsftpd_fifo_fd, buff, 256);
 +    }
      vsf_log_do_log(p_sess, 1);

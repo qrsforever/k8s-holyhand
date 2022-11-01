@@ -38,9 +38,10 @@ ENV FTP_USER=holyhand \
     PASV_PROMISCUOUS=NO \
     PORT_PROMISCUOUS=NO
 
-VOLUME /home/vsftpd
-VOLUME /var/log/vsftpd
-
+# network container
+# VOLUME /home/vsftpd
+# VOLUME /var/log/vsftpd
 # EXPOSE 20 21
+
 WORKDIR /app
 ENTRYPOINT ["/entrypoint.sh"]

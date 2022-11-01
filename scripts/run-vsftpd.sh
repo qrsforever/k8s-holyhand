@@ -7,6 +7,13 @@ chown -R ftp:ftp /home/vsftpd/ /var/ftp
 echo -e "${FTP_USER}\n${FTP_PASS}" > /app/config/virtual_users.txt
 /usr/bin/db_load -T -t hash -f /app/config/virtual_users.txt /app/config/virtual_users.db
 
+if [[ x$LOG_STDOUT == x0 ]]
+then
+    LOG_ROOT=/var/log/vsftpd
+else
+    LOG_ROOT=/var/log
+fi
+
 cat > /app/config/vsftpd.conf << EOB
 background=NO
 anonymous_enable=NO
@@ -20,8 +27,10 @@ local_root=/home/vsftpd/\$USER
 chroot_local_user=YES
 allow_writeable_chroot=YES
 hide_ids=YES
+dual_log_enable=YES
 xferlog_enable=YES
-xferlog_file=/var/log/vsftpd/vsftpd.log
+xferlog_file=${LOG_ROOT}/xferlog.log
+vsftpd_log_file=${LOG_ROOT}/vsftpd.log
 port_enable=YES
 connect_from_port_20=YES
 ftp_data_port=20
@@ -43,7 +52,7 @@ echo "port_promiscuous=${PORT_PROMISCUOUS}" >> /app/config/vsftpd.conf
 export LOG_FILE=`grep xferlog_file /app/config/vsftpd.conf|cut -d= -f2`
 
 # stdout server info:
-if [ ! $LOG_STDOUT ]; then
+if [ x$LOG_STDOUT == x0 ]; then
 cat << EOB
 	SERVER SETTINGS
 	---------------
@@ -53,7 +62,7 @@ cat << EOB
 	· Redirect vsftpd log to STDOUT: No.
 EOB
 else
-    /usr/bin/ln -sf /dev/stdout $LOG_FILE
+    /usr/bin/ln -sf /proc/1/fd/1 $LOG_FILE
 fi
 
 # Run vsftpd:

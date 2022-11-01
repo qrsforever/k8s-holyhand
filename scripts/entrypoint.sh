@@ -7,5 +7,4 @@ BIN_DIR=/app/bin
 ${BIN_DIR}/run-vsftpd.sh
 
 ## start main progress
-sleep 100000
-# ${BIN_DIR}/cosftpd
+${BIN_DIR}/cosftpd

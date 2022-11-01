@@ -21,7 +21,8 @@ services:
     environment:
       FTP_USER: holyhand
       FTP_PASS: holyhand
-      PASV_ADDRESS: 172.19.76.188
+      LOG_STDOUT: 1  
+      PASV_ADDRESS: 0.0.0.0
       PASV_MIN_PORT: 21100
       PASV_MAX_PORT: 21120
       COS_SECRETID: AKIDV7XjgOr42nMhneGdmiPs66rNioeFafeT
@@ -39,5 +40,6 @@ services:
       - ./logs:/var/log/vsftpd
       - ./app/src:/app/src
       - ./scripts/entrypoint.sh:/entrypoint.sh
+      - ./scripts/run-vsftpd.sh:/app/bin/run-vsftpd.sh
     entrypoint: /entrypoint.sh
     network_mode: bridge

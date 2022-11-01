@@ -1137,7 +1137,7 @@ handle_upload_common(struct vsf_session* p_sess, int is_append, int is_unique)
     success = 1;
     if (p_sess->vsftpd_fifo_fd > 0) {
         char buff[256] = {0};
-        memcpy(buff, str_getbuf(p_filename), 255);
+        memcpy(buff, str_getbuf(&p_sess->log_str), 255);
         vsf_sysutil_write_loop(p_sess->vsftpd_fifo_fd, buff, 256);
     }
     vsf_log_do_log(p_sess, 1);

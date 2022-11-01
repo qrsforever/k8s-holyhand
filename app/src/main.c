@@ -53,16 +53,19 @@ void *handle_message(void *arg)
         sprintf(local_path, "%s/%s/%s", FTP_ROOT_PATH, FTP_USER, image_file_path);
         ret = access(local_path, F_OK);
         if (ret == 0) {
-            sprintf(remote_path, "%s/%s", FTP_USER, image_file_path);
+            sprintf(remote_path, "%s%s", FTP_USER, image_file_path);
             char *cos_url = cosftpd_upload_file(local_path, remote_path);
             if (ret == 0) {
                 printf("remove local file: %s\n", local_path);
                 unlink(local_path);
+                const char *endstr = strchr(image_file_path + 1, '/');
+                char mac[32] = {0};
+                memcpy(mac, image_file_path + 1, endstr - image_file_path - 1);
                 char jdata[1024] = {0};
                 sprintf(
                     jdata,
-                    "{\"ftp_user\":\"%s\", \"cos_url\":\"%s/%s\"}",
-                    FTP_USER, cos_url, remote_path);
+                    "{\"ftp_user\":\"%s\", \"mac\":\"%s\", \"cos_url\":\"%s/%s\"}",
+                    FTP_USER, mac, cos_url, remote_path);
                 cosftpd_http_post(jdata);
             }
         }
