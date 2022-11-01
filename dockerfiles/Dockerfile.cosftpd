@@ -2,8 +2,8 @@ FROM hzcsk8s.io/cosftpd-devel as build
 ADD app /app
 RUN cd /app/ && make
 
-
 FROM centos:7
+# FROM hzcsk8s.io/cosftpd-devel
 
 COPY --from=build /opt/build/include /app/include
 COPY --from=build /opt/build/lib /app/lib
@@ -41,7 +41,6 @@ ENV FTP_USER=holyhand \
 VOLUME /home/vsftpd
 VOLUME /var/log/vsftpd
 
-EXPOSE 20 21
-
-# CMD ["/app/bin/run-vsftpd.sh"]
+# EXPOSE 20 21
 WORKDIR /app
+ENTRYPOINT ["/entrypoint.sh"]

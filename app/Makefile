@@ -18,7 +18,7 @@ CC		:=
 AR		:= $(CROSS_COMPILE)ar
 CFLAGS  := $(OPTIMIZE) $(WARNINGS) $(DEFS)
 CPPFLAGS:= -std=c++11
-LDFLAGS := -L/opt/build/lib -lcos_c_sdk -lapr-1 -laprutil-1 -lmxml -lpthread -lcurl   
+LDFLAGS := -L/opt/build/lib -lcos_c_sdk -lapr-1 -laprutil-1 -lmxml -lpthread -lcurl
 INCLUDE := -I/opt/build/include -I/opt/build/include/apr-1 -I/opt/build/include/cos_c_sdk
 
 # 源文件可能的后缀
@@ -32,7 +32,7 @@ OUT_DIR = output
 OBJ_DIR = $(OUT_DIR)/obj
 
 # 指定运行环境(-Wl,-rpath, 多个使用:)
-RPATH 	= ".:$(OUT_DIR)"
+RPATH 	= ".:/app/lib:$(OUT_DIR):/opt/build/lib"
 
 # 额外增加的源文件或者排除不编译的源文件
 SPECIAL_SRC :=

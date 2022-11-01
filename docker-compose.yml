@@ -7,20 +7,37 @@ services:
       context: .
       dockerfile: dockerfiles/Dockerfile.dev
 
-
   cosftpd:
     image: hzcsk8s.io/cosftpd
+    container_name: cosftpd
+    hostname: cosftpd
     build:
       context: .
       dockerfile: dockerfiles/Dockerfile.cosftpd
       args:
         USER_ID: 1000
         GROUP_ID: 1000
-    restart: always
+    # restart: always
+    environment:
+      FTP_USER: holyhand
+      FTP_PASS: holyhand
+      PASV_ADDRESS: 172.19.76.188
+      PASV_MIN_PORT: 21100
+      PASV_MAX_PORT: 21120
+      COS_SECRETID: AKIDV7XjgOr42nMhneGdmiPs66rNioeFafeT
+      COS_SECRETKEY: d190cxQk0CHCtLXjhQt65tUr2yf7KI1V
+      COS_ENDPOINT: cos.ap-beijing.myqcloud.com
+      COS_APPID: 1301930378
+      COS_BUCKET_NAME: cosftpd-1301930378
+      HTTP_SERVER_API: "http://172.19.76.188:9876/cosftpd/on_upload"
     ports:
-      - 0.0.0.0:20:20
-      - 0.0.0.0:21:21
-      - 21100-21110:21100-21110
+      - "20:20"
+      - "21:21"
+      - "21100-21120:21100-21120"
     volumes:
       - ./home:/home/vsftpd
       - ./logs:/var/log/vsftpd
+      - ./app/src:/app/src
+      - ./scripts/entrypoint.sh:/entrypoint.sh
+    entrypoint: /entrypoint.sh
+    network_mode: bridge

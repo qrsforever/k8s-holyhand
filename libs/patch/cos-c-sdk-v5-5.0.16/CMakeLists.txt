@@ -73,7 +73,7 @@ ELSE()
 ENDIF()
 
 #curl-config
-FIND_PROGRAM(CURL_CONFIG_BIN NAMES curl-config)
+FIND_PROGRAM(CURL_CONFIG_BIN NAMES curl-config PATHS /opt/build/bin/)
   
 IF (CURL_CONFIG_BIN)
     EXECUTE_PROCESS(

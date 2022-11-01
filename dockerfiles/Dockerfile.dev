@@ -4,7 +4,6 @@ RUN yum -y update
 RUN yum install -y \
     gcc gcc-c++ \
     make cmake patch \
-    curl-devel \
     libcap-devel \
     pam-devel \
     expat-devel \
@@ -12,16 +11,23 @@ RUN yum install -y \
     tcp_wrappers-devel \
 	db4-utils \
 	db4 \
-	iproute
+	iproute telnet
 
 COPY libs /opt/build
+
+## build curl-7.86.0
+RUN cd /opt/build/ && \
+        tar zxf curl-7.86.0.tar.gz && \
+        cd curl-7.86.0 && \
+        ./configure --prefix /opt/build/ --with-openssl && \
+        make -j && make install
 
 ## build apr-1.7.0
 RUN cd /opt/build/ && \
         tar zxf apr-1.7.0.tar.gz && \
         cd apr-1.7.0 && \
         ./configure --prefix /opt/build/ && \
-        make -j && make install 
+        make -j && make install
 
 ## build apr-util-1.6.1
 RUN cd /opt/build && \
@@ -37,18 +43,18 @@ RUN cd /opt/build && \
         ./configure --prefix /opt/build && \
         make -j && make install
 
-## build vsftpd-3.0.2
-RUN cd /opt/build && \
-        tar zxf vsftpd-3.0.2.tar.gz && \
-        cd vsftpd-3.0.2 && \
-        patch -p2 < ../patch/vsftpd-3.0.2.patch && \
-        make -j && cp vsftpd ../bin
-
 ## build cos-c-sdk-v5-5.0.16
 RUN cd /opt/build && \
         tar zxf cos-c-sdk-v5-5.0.16.tar.gz && \
         cd cos-c-sdk-v5-5.0.16 && \
         patch -p2 < ../patch/cos-c-sdk-v5-5.0.16.patch && \
         cmake . && make -j && make install
+
+## build vsftpd-3.0.2
+RUN cd /opt/build && \
+        tar zxf vsftpd-3.0.2.tar.gz && \
+        cd vsftpd-3.0.2 && \
+        patch -p2 < ../patch/vsftpd-3.0.2.patch && \
+        make -j && cp vsftpd ../bin
 
 WORKDIR /opt/build
