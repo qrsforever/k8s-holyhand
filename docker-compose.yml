@@ -18,23 +18,25 @@ services:
         USER_ID: 1000
         GROUP_ID: 1000
     # restart: always
+    # env_file:
+    #   - ./.env
     environment:
       FTP_USER: holyhand
       FTP_PASS: holyhand
       LOG_STDOUT: 1  
-      PASV_ADDRESS: 0.0.0.0
-      PASV_MIN_PORT: 21100
-      PASV_MAX_PORT: 21120
+      PASV_ADDRESS: ${EXTERNAL_IP:-0.0.0.0}
+      PASV_MIN_PORT: ${PASV_MIN_PORT}
+      PASV_MAX_PORT: ${PASV_MAX_PORT}
       COS_SECRETID: AKIDV7XjgOr42nMhneGdmiPs66rNioeFafeT
       COS_SECRETKEY: d190cxQk0CHCtLXjhQt65tUr2yf7KI1V
       COS_ENDPOINT: cos.ap-beijing.myqcloud.com
       COS_APPID: 1301930378
       COS_BUCKET_NAME: cosftpd-1301930378
-      HTTP_SERVER_API: "http://172.19.76.188:9876/cosftpd/on_upload"
+      HTTP_SERVER_API: ${HTTP_SERVER_API}
     ports:
       - "20:20"
       - "21:21"
-      - "21100-21120:21100-21120"
+      - "${PASV_MIN_PORT}-${PASV_MAX_PORT}:${PASV_MIN_PORT}-${PASV_MAX_PORT}"
     volumes:
       - ./home:/home/vsftpd
       - ./logs:/var/log/vsftpd
