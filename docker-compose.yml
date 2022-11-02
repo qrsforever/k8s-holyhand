@@ -6,6 +6,7 @@ services:
     build:
       context: .
       dockerfile: dockerfiles/Dockerfile.dev
+    network_mode: bridge
 
   cosftpd:
     image: hzcsk8s.io/cosftpd
@@ -17,7 +18,7 @@ services:
       args:
         USER_ID: 1000
         GROUP_ID: 1000
-    # restart: always
+    restart: always
     # env_file:
     #   - ./.env
     environment:
