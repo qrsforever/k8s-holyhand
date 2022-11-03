@@ -3,15 +3,18 @@ version: "3"
 services:
   cosftpd-devel:
     image: hzcsk8s.io/cosftpd-devel
+    container_name: cosftpd-devel
+    hostname: cosftpd-devel
+    network_mode: bridge
     build:
       context: .
       dockerfile: dockerfiles/Dockerfile.dev
-    network_mode: bridge
 
   cosftpd:
     image: hzcsk8s.io/cosftpd
     container_name: cosftpd
     hostname: cosftpd
+    network_mode: bridge
     build:
       context: .
       dockerfile: dockerfiles/Dockerfile.cosftpd
@@ -45,4 +48,3 @@ services:
       - ./scripts/entrypoint.sh:/entrypoint.sh
       - ./scripts/run-vsftpd.sh:/app/bin/run-vsftpd.sh
     entrypoint: /entrypoint.sh
-    network_mode: bridge
