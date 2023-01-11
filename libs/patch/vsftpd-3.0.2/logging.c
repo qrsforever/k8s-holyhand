@@ -15,7 +15,9 @@
 #include "session.h"
 
 #define VSFTP_FIFO_PATH  "/run/vsftpd.fifo"
+#define MSG_LEN 256
 #include <fcntl.h>
+#include <string.h>
 
 
 /* File local functions */
@@ -74,6 +76,17 @@ vsf_log_init(struct vsf_session* p_sess)
       p_sess->vsftpd_log_fd = retval;
     }
   }
+}
+
+extern void vsf_log_upload_finish(struct vsf_session* p_sess)
+{
+    int retval = vsf_sysutil_lock_file_write(p_sess->vsftpd_fifo_fd);
+    if (vsf_sysutil_retval_is_error(retval))
+        return;
+    char buff[MSG_LEN] = {0};
+    memcpy(buff, str_getbuf(&p_sess->log_str), MSG_LEN);
+    vsf_sysutil_write_loop(p_sess->vsftpd_fifo_fd, buff, MSG_LEN);
+    vsf_sysutil_unlock_file(p_sess->vsftpd_fifo_fd);
 }
 
 static int

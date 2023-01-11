@@ -81,6 +81,9 @@ static void get_unique_filename(struct mystr* p_outstr,
 static int data_transfer_checks_ok(struct vsf_session* p_sess);
 static void resolve_tilde(struct mystr* p_str, struct vsf_session* p_sess);
 
+// LD: add
+extern void vsf_log_upload_finish(struct vsf_session* p_sess);
+
 void
 process_post_login(struct vsf_session* p_sess)
 {
@@ -1135,11 +1138,8 @@ handle_upload_common(struct vsf_session* p_sess, int is_append, int is_unique)
   if (trans_ret.retval == 0)
   {
     success = 1;
-    if (p_sess->vsftpd_fifo_fd > 0) {
-        char buff[256] = {0};
-        memcpy(buff, str_getbuf(&p_sess->log_str), 255);
-        vsf_sysutil_write_loop(p_sess->vsftpd_fifo_fd, buff, 256);
-    }
+    // LD: add
+    vsf_log_upload_finish(p_sess);
     vsf_log_do_log(p_sess, 1);
   }
   if (trans_ret.retval == -1)
