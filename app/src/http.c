@@ -8,6 +8,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <curl/curl.h>
 
 static char *HTTP_SERVER_API = NULL;
@@ -15,8 +16,13 @@ static char *HTTP_SERVER_API = NULL;
 
 extern int cosftpd_http_post(const char *jdata)
 {
-    if (HTTP_SERVER_API == NULL)
+    if (HTTP_SERVER_API == NULL) {
         HTTP_SERVER_API = getenv("HTTP_SERVER_API");
+        if (HTTP_SERVER_API == NULL || strlen(HTTP_SERVER_API) == 0) {
+            fprintf(stderr, "not set http server");
+            return -1;
+        }
+    }
 
     CURL *curl;
     CURLcode res;
