@@ -7,6 +7,7 @@ TOP_DIR=$(cd ${CUR_DIR}/..; pwd)
 
 cd $TOP_DIR
 
-docker build -t hzcsk8s.io/cosftpd-devel -f Dockerfile.dev .
+# docker build -t hzcsk8s.io/cosftpd-devel -f dockerfiles/Dockerfile.dev .
+docker build -t hzcsk8s.io/cosftpd -f dockerfiles/Dockerfile.cosftpd .
 
 cd >/dev/null

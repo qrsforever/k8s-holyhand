@@ -80,13 +80,15 @@ vsf_log_init(struct vsf_session* p_sess)
 
 extern void vsf_log_upload_finish(struct vsf_session* p_sess)
 {
-    int retval = vsf_sysutil_lock_file_write(p_sess->vsftpd_fifo_fd);
-    if (vsf_sysutil_retval_is_error(retval))
-        return;
-    char buff[MSG_LEN] = {0};
-    memcpy(buff, str_getbuf(&p_sess->log_str), MSG_LEN);
-    vsf_sysutil_write_loop(p_sess->vsftpd_fifo_fd, buff, MSG_LEN);
-    vsf_sysutil_unlock_file(p_sess->vsftpd_fifo_fd);
+    if (p_sess->vsftpd_fifo_fd > 0) {
+        int retval = vsf_sysutil_lock_file_write(p_sess->vsftpd_fifo_fd);
+        if (vsf_sysutil_retval_is_error(retval))
+            return;
+        char buff[MSG_LEN] = {0};
+        memcpy(buff, str_getbuf(&p_sess->log_str), MSG_LEN - 1);
+        vsf_sysutil_write_loop(p_sess->vsftpd_fifo_fd, buff, MSG_LEN);
+        vsf_sysutil_unlock_file(p_sess->vsftpd_fifo_fd);
+    }
 }
 
 static int

@@ -3,8 +3,13 @@
 CUR_DIR=$(cd $(dirname ${BASH_SOURCE[0]}); pwd)
 BIN_DIR=/app/bin
 
-## setup vsftpd environments
-${BIN_DIR}/run-vsftpd.sh
+while (( 1 ))
+do
+    echo "setup vsftpd environments"
+    ${BIN_DIR}/run-vsftpd.sh
 
-## start main progress
-${BIN_DIR}/cosftpd
+    echo "start main progress"
+    ${BIN_DIR}/cosftpd
+
+    sleep 3
+done

@@ -15,7 +15,7 @@ static char *COS_SECRETKEY   = NULL;
 static char *COS_ENDPOINT    = NULL;
 static char *COS_APPID       = NULL;
 static char *COS_BUCKET_NAME = NULL;
-static char COS_OJB_URL[512] = {0};
+static char COS_OBJ_URL[512] = {0};
 
 void log_status(cos_status_t *s)
 {
@@ -67,15 +67,21 @@ extern char* cosftpd_upload_file(const char *local_path, const char *remote_path
         COS_ENDPOINT    = getenv("COS_ENDPOINT");
         COS_APPID       = getenv("COS_APPID");
         COS_BUCKET_NAME = getenv("COS_BUCKET_NAME");
-        sprintf(COS_OJB_URL, "https://%s.%s", COS_BUCKET_NAME, COS_ENDPOINT);
+        sprintf(COS_OBJ_URL, "https://%s.%s", COS_BUCKET_NAME, COS_ENDPOINT);
     }
-    if (cos_http_io_initialize(NULL, 0) != COSE_OK)
+    if (strlen(COS_OBJ_URL) < 32) {
+        fprintf(stderr, "cos url not valid.\n");
         return NULL;
+    }
+    if (cos_http_io_initialize(NULL, 0) != COSE_OK) {
+        fprintf(stderr, "cos init error\n");
+        return NULL;
+    }
     cos_log_set_level(COS_LOG_WARN);
     cos_log_set_output(NULL);
     ret = put_object_from_file(local_path, remote_path);
     cos_http_io_deinitialize();
     if (ret < 0)
         return NULL;
-    return COS_OJB_URL;
+    return COS_OBJ_URL;
 }

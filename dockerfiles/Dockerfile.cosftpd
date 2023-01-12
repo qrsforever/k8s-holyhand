@@ -3,7 +3,9 @@ ADD app /app
 RUN cd /app/ && make
 
 FROM centos:7
+# debug
 # FROM hzcsk8s.io/cosftpd-devel
+# ADD app /app
 
 COPY --from=build /opt/build/include /app/include
 COPY --from=build /opt/build/lib /app/lib

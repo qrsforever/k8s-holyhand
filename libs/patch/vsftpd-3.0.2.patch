@@ -1,6 +1,6 @@
 diff -ru ../vsftpd-3.0.2/logging.c vsftpd-3.0.2/logging.c
 --- ../vsftpd-3.0.2/logging.c	2013-06-13 19:20:41.000000000 +0800
-+++ vsftpd-3.0.2/logging.c	2023-01-11 18:35:40.263199496 +0800
++++ vsftpd-3.0.2/logging.c	2023-01-12 11:19:32.283314645 +0800
 @@ -14,6 +14,12 @@
  #include "sysstr.h"
  #include "session.h"
@@ -22,19 +22,21 @@ diff -ru ../vsftpd-3.0.2/logging.c vsftpd-3.0.2/logging.c
    if (tunable_syslog_enable || tunable_tcp_wrappers)
    {
      vsf_sysutil_openlog(1);
-@@ -71,6 +78,17 @@
+@@ -71,6 +78,19 @@
    }
  }
  
 +extern void vsf_log_upload_finish(struct vsf_session* p_sess)
 +{
-+    int retval = vsf_sysutil_lock_file_write(p_sess->vsftpd_fifo_fd);
-+    if (vsf_sysutil_retval_is_error(retval))
-+        return;
-+    char buff[MSG_LEN] = {0};
-+    memcpy(buff, str_getbuf(&p_sess->log_str), MSG_LEN);
-+    vsf_sysutil_write_loop(p_sess->vsftpd_fifo_fd, buff, MSG_LEN);
-+    vsf_sysutil_unlock_file(p_sess->vsftpd_fifo_fd);
++    if (p_sess->vsftpd_fifo_fd > 0) {
++        int retval = vsf_sysutil_lock_file_write(p_sess->vsftpd_fifo_fd);
++        if (vsf_sysutil_retval_is_error(retval))
++            return;
++        char buff[MSG_LEN] = {0};
++        memcpy(buff, str_getbuf(&p_sess->log_str), MSG_LEN - 1);
++        vsf_sysutil_write_loop(p_sess->vsftpd_fifo_fd, buff, MSG_LEN);
++        vsf_sysutil_unlock_file(p_sess->vsftpd_fifo_fd);
++    }
 +}
 +
  static int

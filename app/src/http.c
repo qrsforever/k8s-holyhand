@@ -19,7 +19,7 @@ extern int cosftpd_http_post(const char *jdata)
     if (HTTP_SERVER_API == NULL) {
         HTTP_SERVER_API = getenv("HTTP_SERVER_API");
         if (HTTP_SERVER_API == NULL || strlen(HTTP_SERVER_API) == 0) {
-            fprintf(stderr, "not set http server");
+            fprintf(stderr, "[not set http server]: %s\n", jdata);
             return -1;
         }
     }
