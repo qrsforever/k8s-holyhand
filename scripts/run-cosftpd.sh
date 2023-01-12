@@ -5,8 +5,10 @@ TOP_DIR=$(cd $CUR_DIR/..; pwd)
 
 cd $TOP_DIR
 docker run -d \
+    --restart always \
     -v ${TOP_DIR}/home/:/home/vsftpd \
     -v ${TOP_DIR}/scripts/entrypoint.sh:/entrypoint \
+    -v ${TOP_DIR}/scripts/run-vsftpd.sh:/app/bin/run-vsftpd.sh \
     -p 20:20 -p 21:21 -p 21100-21110:21100-21110 \
     -e LOG_STDOUT=1 \
     -e FTP_USER=holyhand -e FTP_PASS=holyhand \

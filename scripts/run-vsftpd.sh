@@ -1,8 +1,11 @@
 #!/bin/bash
 
 # Create home dir and update vsftpd user db:
-mkdir -p "/home/vsftpd/${FTP_USER}" "/var/ftp" "/app/config"
-chown -R ftp:ftp /home/vsftpd/ /var/ftp
+if [[ ! -d /home/vsftpd/${FTP_USER} ]]
+then
+    mkdir -p "/home/vsftpd/${FTP_USER}" "/var/ftp" "/app/config"
+    chown -R ftp:ftp /home/vsftpd/${FTP_USER} /var/ftp
+fi
 
 echo -e "${FTP_USER}\n${FTP_PASS}" > /app/config/virtual_users.txt
 /usr/bin/db_load -T -t hash -f /app/config/virtual_users.txt /app/config/virtual_users.db

@@ -124,8 +124,8 @@ int main(void)
                 perror("read");
                 break;
             }
-            fprintf(stderr, "recv: %s\n", buff);
-            if (strcmp(buff, "quit") == 0)
+            fprintf(stderr, "recv: [%s]\n", buff);
+            if (strncmp(buff, "quit", 4) == 0)
                 break;
             char* msg = (char*)malloc(MSG_LEN);
             memcpy(msg, buff, MSG_LEN);
